@@ -5,6 +5,7 @@ import nltk
 from nltk.tokenize import sent_tokenize, word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
+from applicationinsights import TelemetryClient
 
 # Télécharger les ressources nécessaires pour nltk
 nltk.download('punkt')
@@ -14,6 +15,8 @@ nltk.download('wordnet')
 # Créer une application Flask
 app = Flask(__name__)
 
+# Initialiser le client de télémétrie Application Insights
+tc = TelemetryClient('<Your Instrumentation Key>')
 
 # Partie interface utilisateur de l'app
 # ---------------------------------------------------------------------------------
@@ -26,6 +29,9 @@ def index():
         X = request.form.get('input').split('\n')
         X_tok = [transform_bow_with_hash_lem_fct(x) for x in X]
         prediction = model.predict(X_tok)
+        # Envoyer une trace à Application Insights
+        tc.track_trace('Prediction made')
+        tc.flush()
     return render_template('index.html', prediction=prediction)
 
 
