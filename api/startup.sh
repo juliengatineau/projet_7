@@ -20,7 +20,7 @@ cleanup() {
 }
 
 # Capturer le signal SIGINT et appeler la fonction cleanup
-trap cleanup SIGINT
+trap cleanup INT
 
 # Attendre que tous les processus en arrière-plan se terminent
 wait

@@ -77,7 +77,6 @@ with open('model/tfidf.dill', 'rb') as f:
 
 
 # Créer une application Flask
-app = Flask(__name__)
 app = Flask(__name__, template_folder='frontend/templates')
 
 # Initialiser le client de télémétrie Application Insights

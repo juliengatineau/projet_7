@@ -6,20 +6,18 @@
 </head>
 <body>
 <section>
-
-    <h1>Prédictions des tweets</h1>
+    <h1>Prédiction de sentiment de tweet</h1>
 
     {% if feedback %}
-        <article id="feedback">
+        <article id="feedback">        
             <p>{{ feedback[0] }}</p>
             <p>{{ feedback[1] }}</p>
         </article>
     {% endif %}
-
-
-    <article id="get_tweet">
+    
+    <article>
         <form id="form_submit" method="POST" action="/">
-            <span class="error">
+            <span id="error">
                 {% if error %}
                     {{ error }}
                 {% endif %}
@@ -27,31 +25,33 @@
             <textarea id="form_text" name="input_text" placeholder="Entrez votre tweet ici...">{% if original_message %}{{ original_message }}{% endif %}</textarea>
             <input type="submit" value="Submit">
         </form>
-    </article>      
-
+    </article>    
 
     {% if prediction %}
-        <article id="reponse">
-            <p>{{ prediction }}</p>
+        <article id="answer">
+            <p class="reponse">{{ prediction }}</p>
             <div class="line"></div>
-            <form id="form_confirm" method="POST" action="/">
+            <p>La prédiction est-elle correcte ?</p>
+            <form id="confirm_form" method="POST" action="/">
                 <button type="submit" name="is_correct" value="oui">Oui</button>
                 <button type="submit" name="is_correct" value="non">Non</button>
             </form>
         </article>
     {% endif %}
 
-        
-</section>
-    <p class="mentions">Créé par julien Gatineau pour le projet 7 de la Formation Ingénieur IA d'OpenClassroom</p>
+</section>  
 
-    <script>
-    document.getElementById("form_text").addEventListener("keypress", function(event) {
-        if (event.keyCode == 13) {
-            event.preventDefault();
-            document.getElementById("form_submit").submit();
-        }
-    });
-    </script>
+<p class="mentions">Créé par julien Gatineau pour le projet 7 de la Formation Ingénieur IA d'OpenClassroom</p>
+
+<script>
+document.getElementById("form_text").addEventListener("keypress", function(event) {
+    if (event.keyCode == 13) {
+        event.preventDefault();
+        document.getElementById("form_submit").submit();
+    }
+});
+
+
+</script>
 </body>
 </html>
