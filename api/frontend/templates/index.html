@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Prédiction des tweets</title>
+    <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+<section>
+
+    <h1>Prédictions des tweets</h1>
+
+    {% if feedback %}
+        <article id="feedback">
+            <p>{{ feedback[0] }}</p>
+            <p>{{ feedback[1] }}</p>
+        </article>
+    {% endif %}
+
+
+    <article id="get_tweet">
+        <form id="form_submit" method="POST" action="/">
+            <span class="error">
+                {% if error %}
+                    {{ error }}
+                {% endif %}
+            </span>
+            <textarea id="form_text" name="input_text" placeholder="Entrez votre tweet ici...">{% if original_message %}{{ original_message }}{% endif %}</textarea>
+            <input type="submit" value="Submit">
+        </form>
+    </article>      
+
+
+    {% if prediction %}
+        <article id="reponse">
+            <p>{{ prediction }}</p>
+            <div class="line"></div>
+            <form id="form_confirm" method="POST" action="/">
+                <button type="submit" name="is_correct" value="oui">Oui</button>
+                <button type="submit" name="is_correct" value="non">Non</button>
+            </form>
+        </article>
+    {% endif %}
+
+        
+</section>
+    <p class="mentions">Créé par julien Gatineau pour le projet 7 de la Formation Ingénieur IA d'OpenClassroom</p>
+
+    <script>
+    document.getElementById("form_text").addEventListener("keypress", function(event) {
+        if (event.keyCode == 13) {
+            event.preventDefault();
+            document.getElementById("form_submit").submit();
+        }
+    });
+    </script>
+</body>
+</html>
