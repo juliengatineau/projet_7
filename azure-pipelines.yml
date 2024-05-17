@@ -1,0 +1,29 @@
+trigger:
+- api
+
+stages:
+- stage: Build
+  jobs:
+  - job: Build
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: echo Building the app...
+- stage: Test
+  jobs:
+  - job: Test
+    pool:
+      vmImage: 'ubuntu-latest'
+    steps:
+    - script: echo Testing the app...
+- stage: Deploy
+  jobs:
+  - deployment: Deploy
+    pool:
+      vmImage: 'ubuntu-latest'
+    environment: 'production'
+    strategy:
+      runOnce:
+        deploy:
+          steps:
+          - script: echo Deploying the app...
