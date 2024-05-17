@@ -104,12 +104,12 @@ def predict():
 
 @app.route('/confirm', methods=['POST'])
 def confirm():
-    is_correct = request.form.get('is_correct')
+    is_correct = request.json.get('is_correct')
     if is_correct == 'oui':
         is_correct = True
     elif is_correct == 'non':
         is_correct = False
-    return "True"
+    return "Feedback received"
 
 # Exécuter l'application Flask en mode débogage si le script est exécuté directement
 if __name__ == '__main__':
