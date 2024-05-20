@@ -1,7 +1,0 @@
-scikit-learn
-flask
-nltk
-dill
-gunicorn
-applicationinsights
-watchdog

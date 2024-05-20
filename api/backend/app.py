@@ -1,5 +1,6 @@
 # app.py
 from flask import Flask, request, jsonify
+
 import dill
 import nltk
 from nltk.data import find
@@ -7,7 +8,12 @@ import numpy as np
 from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
-from applicationinsights import TelemetryClient
+
+
+
+# Fonctions de Tokenizatione et prétraitement du texte et importation des données
+# ---------------------------------------------------------------------------------
+
 
 # Télécharger les ressources nécessaires pour nltk
 try:
@@ -25,9 +31,6 @@ try:
 except LookupError:
     nltk.download('wordnet')
 
-
-# Fonctions de Tokenizatione et prétraitement du texte
-# ---------------------------------------------------------------------------------
 
 # Tokenizer avec les hashtags
 def tokenizer_with_hash_fct(sentence) :
@@ -67,7 +70,6 @@ def transform_bow_with_hash_lem_fct(desc_text) :
     return transf_desc_text
 
 
-
 # Charger le modèle
 with open('model/model.dill', 'rb') as f:
     model = dill.load(f)
@@ -76,13 +78,34 @@ with open('model/tfidf.dill', 'rb') as f:
     tfidf = dill.load(f)
 
 
-# Créer une application Flask
-app = Flask(__name__, template_folder='frontend/templates')
-
-# Initialiser le client de télémétrie Application Insights
-#tc = TelemetryClient('<Your Instrumentation Key>')
-# Partie interface utilisateur de l'app
+# Azure insight 
 # ---------------------------------------------------------------------------------
+
+# Import the `configure_azure_monitor()` function from the
+# `azure.monitor.opentelemetry` package.
+from azure.monitor.opentelemetry import configure_azure_monitor
+# Import the tracing api from the `opentelemetry` package.
+from opentelemetry import trace
+import logging
+
+# Configure OpenTelemetry to use Azure Monitor with the 
+# APPLICATIONINSIGHTS_CONNECTION_STRING environment variable.
+configure_azure_monitor(
+    connection_string="InstrumentationKey=2bf5220a-d259-4c2d-9cf8-0d0d19275320;IngestionEndpoint=https://westeurope-5.in.applicationinsights.azure.com/;LiveEndpoint=https://westeurope.livediagnostics.monitor.azure.com/;ApplicationId=acc3a0c5-b7ed-465e-9d2b-56e7f718859a",
+)
+
+# Get the current tracer
+tracer = trace.get_tracer(__name__)
+# Create a logger
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.INFO)
+
+# App
+# ---------------------------------------------------------------------------------
+
+# Créer une application Flask
+app = Flask(__name__)
+
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -93,8 +116,8 @@ def predict():
     X_tok = tfidf.transform([X_tok])
     result = model.predict(X_tok)
 
-    # Transform the result into a sentence
-    prediction = "Votre tweet a été prédit positif." if result[0] == 1 else "Votre tweet a été prédit négatif."
+    # Transform the result into an int
+    prediction = int(result[0])
 
     # Return the original message and the prediction
     return jsonify({
@@ -102,14 +125,28 @@ def predict():
         'prediction': prediction
     })
 
+
 @app.route('/confirm', methods=['POST'])
 def confirm():
+
     is_correct = request.json.get('is_correct')
-    if is_correct == 'oui':
-        is_correct = True
-    elif is_correct == 'non':
-        is_correct = False
+    original_message = request.json.get('original_message')
+    prediction = request.json.get('prediction')
+
+    # Start a new span and add the data as attributes
+    with tracer.start_as_current_span("feedback"):
+        span = trace.get_current_span()
+        span.set_attribute("original_message", original_message)
+        span.set_attribute("prediction", prediction)
+        span.set_attribute("confirmation", is_correct)
+
+        # Log the span
+        logger.info(f"original_message: {original_message}, prediction: {prediction}, confirmation: {is_correct}")
+
     return "Feedback received"
+
+# Flush the logs before the application ends
+#atexit.register(logging.shutdown)
 
 # Exécuter l'application Flask en mode débogage si le script est exécuté directement
 if __name__ == '__main__':

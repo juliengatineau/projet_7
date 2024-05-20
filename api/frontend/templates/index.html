@@ -27,14 +27,16 @@
         </form>
     </article>    
 
-    {% if prediction %}
+    {% if prediction_text %}
         <article id="answer">
-            <p class="reponse">{{ prediction }}</p>
+            <p class="reponse">{{ prediction_text }}</p>
             <div class="line"></div>
             <p>La prédiction est-elle correcte ?</p>
             <form id="confirm_form" method="POST" action="/">
-                <button type="submit" name="is_correct" value="oui">Oui</button>
-                <button type="submit" name="is_correct" value="non">Non</button>
+                <input type="hidden" id="original_message" name="original_message" value="{{ original_message }}">
+                <input type="hidden" id="prediction" name="prediction" value="{{ prediction }}">
+                <button type="submit" name="is_correct" value=1>Oui</button>
+                <button type="submit" name="is_correct" value=0>Non</button>
             </form>
         </article>
     {% endif %}
