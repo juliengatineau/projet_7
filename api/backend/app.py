@@ -13,7 +13,7 @@ from nltk.stem import WordNetLemmatizer
 app = Flask(__name__)
 
 # Fonctions de Tokenizatione et prétraitement du texte et importation des données
-# ---------------------------------------------------------------------------------
+# --------------------------------------------------------------------------------
 
 
 # Télécharger les ressources nécessaires pour nltk
