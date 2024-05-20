@@ -73,14 +73,19 @@ def transform_bow_with_hash_lem_fct(desc_text) :
 
 # Charger le modèle
 try:
-    with open('model/model.dill', 'rb') as f:
-        model = dill.load(f)
+    if os.path.exists('model/model.dill'):
+        with open('model/model.dill', 'rb') as f:
+            model = dill.load(f)
+    else:
+        print("File model/model.dill does not exist")
 
-    with open('model/tfidf.dill', 'rb') as f:
-        tfidf = dill.load(f)
+    if os.path.exists('model/tfidf.dill'):
+        with open('model/tfidf.dill', 'rb') as f:
+            tfidf = dill.load(f)
+    else:
+        print("File model/tfidf.dill does not exist")
 except Exception as e:
-    print(f"Exception occurred while loading the model: {e}")
-
+    print("An error occurred: ", e)
 
 # Azure insight 
 # ---------------------------------------------------------------------------------
