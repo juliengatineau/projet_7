@@ -16,28 +16,32 @@ app = Flask(__name__)
 model=None
 tfidf=None
 
+# Obtenir le chemin du fichier app.py
+app_path = os.path.dirname(os.path.abspath(__file__))
+
 # Charger le modèle
 try:
-    if os.path.exists('model/model.dill'):
-        with open('model/model.dill', 'rb') as f:
+    model_path = os.path.join(app_path, 'model/model.dill')
+    if os.path.exists(model_path):
+        with open(model_path, 'rb') as f:
             model = dill.load(f)
     else:
-        print("File model/model.dill does not exist")
+        print(f"File {model_path} does not exist")
 
-    if os.path.exists('model/tfidf.dill'):
-        with open('model/tfidf.dill', 'rb') as f:
+    tfidf_path = os.path.join(app_path, 'model/tfidf.dill')
+    if os.path.exists(tfidf_path):
+        with open(tfidf_path, 'rb') as f:
             tfidf = dill.load(f)
     else:
-        print("File model/tfidf.dill does not exist")
+        print(f"File {tfidf_path} does not exist")
 except Exception as e:
     print("An error occurred: ", e)
 
-
 # Vérifier si les modèles ont été chargés correctement
 if model is None:
-    raise Exception("Failed to load model from model/model.dill")
+    raise Exception(f"Failed to load model from {model_path}")
 if tfidf is None:
-    raise Exception("Failed to load tfidf from model/tfidf.dill")
+    raise Exception(f"Failed to load tfidf from {tfidf_path}")
 
 # Fonctions de Tokenizatione et prétraitement du texte et importation des données
 # -------------------------------------------------------------------------------
