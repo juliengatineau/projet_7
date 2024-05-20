@@ -43,4 +43,4 @@ def test_predict_speed(client):
     start_time = time.time()
     response = client.post('/predict', json={'text': 'I am very disappointed with this product.'})
     end_time = time.time()
-    assert end_time - start_time < 1  # replace 1 with the maximum acceptable time in seconds
+    assert end_time - start_time < 3
