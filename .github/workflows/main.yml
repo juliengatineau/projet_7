@@ -51,17 +51,11 @@ jobs:
           cd api/backend
           pip install -r requirements.txt
 
-      - name: Login to Azure
-        uses: azure/login@v1
-        with:
-          client-id: ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID  }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }}
-
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
         with:
           app-name: 'projet-7-api'
           slot-name: 'production'
-          package: api/backend
+          publish-profile: ${{ secrets.AzureAppService_PublishProfile_03d91e8580ab4f1cbd2a745475c46204 }}
+          package: './api/backend'
