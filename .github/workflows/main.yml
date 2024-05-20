@@ -28,7 +28,7 @@ jobs:
       run: |
         echo Testing the app...
         cd api/backend
-        pytest
+        pytest test.py
 
   deploy:
     needs: test
