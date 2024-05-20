@@ -9,7 +9,8 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-
+# Créer une application Flask
+app = Flask(__name__)
 
 # Fonctions de Tokenizatione et prétraitement du texte et importation des données
 # ---------------------------------------------------------------------------------
@@ -71,11 +72,14 @@ def transform_bow_with_hash_lem_fct(desc_text) :
 
 
 # Charger le modèle
-with open('model/model.dill', 'rb') as f:
-    model = dill.load(f)
+try:
+    with open('model/model.dill', 'rb') as f:
+        model = dill.load(f)
 
-with open('model/tfidf.dill', 'rb') as f:
-    tfidf = dill.load(f)
+    with open('model/tfidf.dill', 'rb') as f:
+        tfidf = dill.load(f)
+except Exception as e:
+    print(f"Exception occurred while loading the model: {e}")
 
 
 # Azure insight 
@@ -86,6 +90,7 @@ with open('model/tfidf.dill', 'rb') as f:
 from azure.monitor.opentelemetry import configure_azure_monitor
 # Import the tracing api from the `opentelemetry` package.
 from opentelemetry import trace
+
 import logging
 
 # Configure OpenTelemetry to use Azure Monitor with the 
@@ -102,9 +107,6 @@ logger.setLevel(logging.INFO)
 
 # App
 # ---------------------------------------------------------------------------------
-
-# Créer une application Flask
-app = Flask(__name__)
 
 
 @app.route('/predict', methods=['POST'])
@@ -133,20 +135,15 @@ def confirm():
     original_message = request.json.get('original_message')
     prediction = request.json.get('prediction')
 
-    # Start a new span and add the data as attributes
-    with tracer.start_as_current_span("feedback"):
-        span = trace.get_current_span()
-        span.set_attribute("original_message", original_message)
-        span.set_attribute("prediction", prediction)
-        span.set_attribute("confirmation", is_correct)
-
-        # Log the span
-        logger.info(f"original_message: {original_message}, prediction: {prediction}, confirmation: {is_correct}")
+    # Set the custom properties
+    custom_properties = {
+        'original_message': original_message,
+        'prediction': prediction,
+        'confirmation': is_correct
+    }
+    logger.info('message with custom properties', extra=custom_properties)
 
     return "Feedback received"
-
-# Flush the logs before the application ends
-#atexit.register(logging.shutdown)
 
 # Exécuter l'application Flask en mode débogage si le script est exécuté directement
 if __name__ == '__main__':

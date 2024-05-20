@@ -1,5 +1,5 @@
 trigger:
-- api
+- api/backend
 
 stages:
 - stage: Build
@@ -9,6 +9,9 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - script: echo Building the app...
+    - script: pip install pipreqs
+    - script: pipreqs . --force
+    - script: pip install -r requirements.txt
 - stage: Test
   jobs:
   - job: Test
@@ -16,6 +19,7 @@ stages:
       vmImage: 'ubuntu-latest'
     steps:
     - script: echo Testing the app...
+    - script: pytest
 - stage: Deploy
   jobs:
   - deployment: Deploy
@@ -27,3 +31,9 @@ stages:
         deploy:
           steps:
           - script: echo Deploying the app...
+          - script: pip install azure-cli
+          - script: |
+              az login --service-principal -u $a4ccbedc-5aa3-492f-92b2-0a8fe8bb8da3 -p $b4544870-4ece-424f-889e-7bd9b4ec50ff --tenant $97d1798c-a34f-44c0-b781-84d1b4875af1
+          - script: zip -r app.zip .
+          - script: |
+              az webapp deployment source config-zip --name <your-app-name> --resource-group <your-resource-group> --src app.zip

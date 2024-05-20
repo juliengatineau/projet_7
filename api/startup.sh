@@ -1,11 +1,12 @@
 #!/bin/sh
 
 # Lancer le backend
+cd backend 
 gunicorn -b :8001 --reload app:app &
 backend_pid=$!
 
 # Lancer le frontend
-cd frontend
+cd ../frontend
 export FLASK_APP=app_frontend.py
 export FLASK_ENV=development
 export FLASK_DEBUG=1
