@@ -20,7 +20,8 @@ jobs:
     - name: Build the app
       run: |
         echo Building the app...
-        pip install -r requirements.txt
+        cd api/backend
+        pip install -r /requirements.txt
 
   test:
     needs: build
@@ -37,6 +38,7 @@ jobs:
     - name: Test the app
       run: |
         echo Testing the app...
+        cd api/backend
         pytest
 
   deploy:
@@ -56,5 +58,6 @@ jobs:
         echo Deploying the app...
         pip install azure-cli
         az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -p ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+        cd api/backend
         zip -r app.zip .
         az webapp deployment source config-zip --name projet-7-api --resource-group ressources_rojet_7 --src app.zip
