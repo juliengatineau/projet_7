@@ -1,4 +1,3 @@
-distutils
 dill==0.3.8
 Flask==3.0.3
 nltk==3.8.1
