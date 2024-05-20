@@ -33,6 +33,11 @@ except Exception as e:
     print("An error occurred: ", e)
 
 
+# Vérifier si les modèles ont été chargés correctement
+if model is None:
+    raise Exception("Failed to load model from model/model.dill")
+if tfidf is None:
+    raise Exception("Failed to load tfidf from model/tfidf.dill")
 
 # Fonctions de Tokenizatione et prétraitement du texte et importation des données
 # -------------------------------------------------------------------------------
