@@ -13,6 +13,27 @@ from nltk.stem import WordNetLemmatizer
 # Créer une application Flask
 app = Flask(__name__)
 
+model=None
+tfidf=None
+
+# Charger le modèle
+try:
+    if os.path.exists('model/model.dill'):
+        with open('model/model.dill', 'rb') as f:
+            model = dill.load(f)
+    else:
+        print("File model/model.dill does not exist")
+
+    if os.path.exists('model/tfidf.dill'):
+        with open('model/tfidf.dill', 'rb') as f:
+            tfidf = dill.load(f)
+    else:
+        print("File model/tfidf.dill does not exist")
+except Exception as e:
+    print("An error occurred: ", e)
+
+
+
 # Fonctions de Tokenizatione et prétraitement du texte et importation des données
 # -------------------------------------------------------------------------------
 
@@ -71,22 +92,6 @@ def transform_bow_with_hash_lem_fct(desc_text) :
     transf_desc_text = ' '.join(lem_w)
     return transf_desc_text
 
-
-# Charger le modèle
-try:
-    if os.path.exists('model/model.dill'):
-        with open('model/model.dill', 'rb') as f:
-            model = dill.load(f)
-    else:
-        print("File model/model.dill does not exist")
-
-    if os.path.exists('model/tfidf.dill'):
-        with open('model/tfidf.dill', 'rb') as f:
-            tfidf = dill.load(f)
-    else:
-        print("File model/tfidf.dill does not exist")
-except Exception as e:
-    print("An error occurred: ", e)
 
 # Azure insight 
 # ---------------------------------------------------------------------------------
