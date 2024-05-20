@@ -4,27 +4,11 @@ on:
   push:
     paths:
       - 'api/backend/**'
+      - '.github/workflows/main.yml'
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
-
-    steps:
-    - uses: actions/checkout@v2
-
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12.3'
-
-    - name: Build the app
-      run: |
-        echo Building the app...
-        cd api/backend
-        pip install -r requirements.txt
 
   test:
-    needs: build
     runs-on: ubuntu-latest
 
     steps:
@@ -34,6 +18,11 @@ jobs:
       uses: actions/setup-python@v2
       with:
         python-version: '3.12.3'
+
+    - name: Install dependencies
+      run: |
+        cd api/backend
+        pip install -r requirements.txt
 
     - name: Test the app
       run: |
@@ -53,11 +42,14 @@ jobs:
       with:
         python-version: '3.12.3'
 
+    - name: Install dependencies
+      run: |
+        pip install azure-cli
+
     - name: Deploy the app
       run: |
         echo Deploying the app...
-        pip install azure-cli
         az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -p ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
         cd api/backend
-        zip -r app.zip .
-        az webapp deployment source config-zip --name projet-7-api --resource-group ressources_rojet_7 --src app.zip
+        az webapp deployment source config-zip --name projet-7-api --resource-group ressources_rojet_7
+        az webapp config set --name projet-7-api --resource-group ressources_rojet_7 --startup-file startup.sh
