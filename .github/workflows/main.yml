@@ -20,8 +20,6 @@ jobs:
     - name: Build the app
       run: |
         echo Building the app...
-        pip install pipreqs
-        pipreqs . --force
         pip install -r requirements.txt
 
   test:
