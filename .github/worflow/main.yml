@@ -1,0 +1,62 @@
+name: CI/CD Pipeline
+
+on:
+  push:
+    paths:
+      - 'api/backend/**'
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.3'
+
+    - name: Build the app
+      run: |
+        echo Building the app...
+        pip install pipreqs
+        pipreqs . --force
+        pip install -r requirements.txt
+
+  test:
+    needs: build
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.3'
+
+    - name: Test the app
+      run: |
+        echo Testing the app...
+        pytest
+
+  deploy:
+    needs: test
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2
+
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.3'
+
+    - name: Deploy the app
+      run: |
+        echo Deploying the app...
+        pip install azure-cli
+        az login --service-principal -u ${{ secrets.AZURE_SERVICE_PRINCIPAL_ID }} -p ${{ secrets.AZURE_SERVICE_PRINCIPAL_SECRET }} --tenant ${{ secrets.AZURE_TENANT_ID }}
+        zip -r app.zip .
+        az webapp deployment source config-zip --name projet-7-api --resource-group ressources_rojet_7 --src app.zip
