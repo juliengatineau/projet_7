@@ -1,8 +1,8 @@
 # app.py
-print("Hello from app.py")
+print("--------------------------------------------- Hello from app.py")
 from flask import Flask, request, jsonify
 import os
-
+print("---------------------------------------------  Importing dill")
 import dill
 import nltk
 from nltk.data import find
