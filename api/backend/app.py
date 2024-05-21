@@ -1,4 +1,5 @@
 # app.py
+print("Hello from app.py")
 from flask import Flask, request, jsonify
 import os
 
@@ -131,6 +132,7 @@ logger.setLevel(logging.INFO)
 
 @app.route('/predict', methods=['POST'])
 def predict():
+    print("Predict function called")
     X = request.json['text']
     # Process the text here and store the result in a global variable
     # Tokenizer les données
@@ -150,7 +152,7 @@ def predict():
 
 @app.route('/confirm', methods=['POST'])
 def confirm():
-
+    print("Confirm function called")
     is_correct = request.json.get('is_correct')
     original_message = request.json.get('original_message')
     prediction = request.json.get('prediction')

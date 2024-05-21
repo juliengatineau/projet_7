@@ -8,32 +8,32 @@ on:
 
 jobs:
 
-  #test:
-   # runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-    #steps:
-    #- uses: actions/checkout@v2
+    steps:
+    - uses: actions/checkout@v2
 
-    #- name: Set up Python
-     # uses: actions/setup-python@v2
-      #with:
-       # python-version: '3.12.3'
+    - name: Set up Python
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.12.3'
 
-    #- name: Install dependencies
-     # run: |
-      #  cd api/backend
-       # pip install -r requirements.txt
+    - name: Install dependencies
+      run: |
+        cd api/backend
+        pip install -r requirements.txt
 
-    #- name: Test the app
-     # run: |
-      #  echo Testing the app...
-       # cd api/backend
-        #pytest test.py
+    - name: Test the app
+      run: |
+        echo Testing the app...
+        cd api/backend
+        pytest test.py
 
 
   deploy:
     runs-on: ubuntu-latest
-    #needs: test
+    needs: test
     environment:
       name: 'production'
 

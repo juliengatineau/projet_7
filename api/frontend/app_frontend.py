@@ -3,7 +3,7 @@ import requests
 
 
 app = Flask(__name__)
-api_url = 'http://localhost:8001'
+api_url = 'http://projet-7-api.azurewebsites.net'
 
 
 @app.route('/', methods=['GET', 'POST'])
