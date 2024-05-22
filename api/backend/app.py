@@ -11,6 +11,7 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
+print("---------------------------------------------  end import")
 # Créer une application Flask
 app = Flask(__name__)
 
@@ -105,7 +106,7 @@ def transform_bow_with_hash_lem_fct(desc_text) :
 
 # Azure insight 
 # ---------------------------------------------------------------------------------
-
+print("---------------------------------------------  Importing Azure Monitor")
 # Import the `configure_azure_monitor()` function from the
 # `azure.monitor.opentelemetry` package.
 from azure.monitor.opentelemetry import configure_azure_monitor
@@ -113,7 +114,7 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
 
 import logging
-
+print("---------------------------------------------  end import Azure Monitor")
 # Configure OpenTelemetry to use Azure Monitor with the 
 # APPLICATIONINSIGHTS_CONNECTION_STRING environment variable.
 configure_azure_monitor(
@@ -125,14 +126,14 @@ tracer = trace.get_tracer(__name__)
 # Create a logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-
+print("---------------------------------------------  end tracer and logger")
 # App
 # ---------------------------------------------------------------------------------
 
 
 @app.route('/predict', methods=['POST'])
 def predict():
-    print("Predict function called")
+    print("-------------------------------------------------Predict function called")
     X = request.json['text']
     # Process the text here and store the result in a global variable
     # Tokenizer les données
@@ -152,7 +153,7 @@ def predict():
 
 @app.route('/confirm', methods=['POST'])
 def confirm():
-    print("Confirm function called")
+    print("-------------------------------------------------Confirm function called")
     is_correct = request.json.get('is_correct')
     original_message = request.json.get('original_message')
     prediction = request.json.get('prediction')

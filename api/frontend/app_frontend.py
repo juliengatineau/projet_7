@@ -30,7 +30,16 @@ def index():
                 response = requests.post(f'{api_url}/predict', json={'text': X})
 
                 # Convert the response to a Python dictionary
-                response_data = response.json()
+                if response.content:
+                    print("--------------------------------------------")
+                    print(response.content)
+                    print("--------------------------------------------")
+                    try:
+                        response_data = response.json()
+                    except ValueError:
+                        print("Response not in expected JSON format.")
+                else:
+                    print("Empty response received.")
                 # Extract the original message and the prediction
                 original_message = response_data['original_message']
                 prediction = int(response_data['prediction'])
