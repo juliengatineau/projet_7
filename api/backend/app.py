@@ -17,7 +17,7 @@ app = Flask(__name__)
 
 model=None
 tfidf=None
-
+#ifdufhui
 # Obtenir le chemin du fichier app.py
 app_path = os.path.dirname(os.path.abspath(__file__))
 
