@@ -23,11 +23,10 @@ jobs:
       - name: Create and start virtual environment
         run: |
           python -m venv venv
-          source venv/bin/activate
+          source api/venv/bin/activate
       
       - name: Install dependencies
         run: |
-          cd api
           pip install -r requirements.txt
         
       - name: Test the app
