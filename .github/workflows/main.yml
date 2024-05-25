@@ -22,7 +22,7 @@ jobs:
 
       - name: Create and start virtual environment
         run: |
-          python -m venv venv
+          python -m venv api/venv
           source api/venv/bin/activate
       
       - name: Install dependencies
