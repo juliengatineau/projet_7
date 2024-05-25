@@ -8,49 +8,62 @@ on:
 
 jobs:
 
-  test:
+
+  build:
     runs-on: ubuntu-latest
 
     steps:
-    - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
-    - name: Set up Python
-      uses: actions/setup-python@v2
-      with:
-        python-version: '3.12.3'
-
-    - name: Install dependencies
-      run: |
-        cd api/backend
-        pip install -r requirements.txt
-
-    - name: Test the app
-      run: |
-        echo Testing the app...
-        cd api/backend
-        pytest test.py
-
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: test
-    environment:
-      name: 'production'
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Set up Python
-        uses: actions/setup-python@v2
+      - name: Set up Python version
+        uses: actions/setup-python@v1
         with:
           python-version: '3.12.3'
 
+      - name: Create and start virtual environment
+        run: |
+          python -m venv venv
+          source venv/bin/activate
+      
       - name: Install dependencies
         run: |
-          cd api/backend
+          cd api
           pip install -r requirements.txt
+        
+      - name: Test the app
+        run: |
+          echo Testing the app...
+          cd api/backend
+          pytest test.py
 
+      - name: Zip artifact for deployment
+        run: zip release.zip ./* -r
+
+      - name: Upload artifact for deployment jobs
+        uses: actions/upload-artifact@v3
+        with:
+          name: python-app
+          path: |
+            release.zip
+            !venv/
+  
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+    environment:
+      name: 'production'
+      url: ${{ steps.deploy-to-webapp.outputs.webapp-url }}
+    
+    steps:
+      - name: Download artifact from build job
+        uses: actions/download-artifact@v3
+        with:
+          name: python-app
+
+      - name: Unzip artifact for deployment
+        run: unzip release.zip
+
+      
       - name: 'Deploy to Azure Web App'
         uses: azure/webapps-deploy@v2
         id: deploy-to-webapp
@@ -58,4 +71,12 @@ jobs:
           app-name: 'projet-7-api'
           slot-name: 'production'
           publish-profile: ${{ secrets.AzureAppService_PublishProfile_03d91e8580ab4f1cbd2a745475c46204 }}
-          package: './api/backend'
+          package: './api'          
+
+
+# Secret du premier fichier 
+#secrets.AzureAppService_PublishProfile_03d91e8580ab4f1cbd2a745475c46204
+
+
+# Secret du deucième fichier
+#secrets.AzureAppService_PublishProfile_1dff99dceef147f2b24848c59cfd79ec

@@ -1,8 +1,7 @@
 # app.py
-print("--------------------------------------------- Hello from app.py")
+
 from flask import Flask, request, jsonify
 import os
-print("---------------------------------------------  Importing dill")
 import dill
 import nltk
 from nltk.data import find
@@ -11,9 +10,10 @@ from nltk.tokenize import word_tokenize
 from nltk.corpus import stopwords
 from nltk.stem import WordNetLemmatizer
 
-print("---------------------------------------------  end import")
 # Créer une application Flask
+
 app = Flask(__name__)
+
 
 model=None
 tfidf=None
@@ -106,7 +106,7 @@ def transform_bow_with_hash_lem_fct(desc_text) :
 
 # Azure insight 
 # ---------------------------------------------------------------------------------
-print("---------------------------------------------  Importing Azure Monitor")
+
 # Import the `configure_azure_monitor()` function from the
 # `azure.monitor.opentelemetry` package.
 from azure.monitor.opentelemetry import configure_azure_monitor
@@ -114,7 +114,6 @@ from azure.monitor.opentelemetry import configure_azure_monitor
 from opentelemetry import trace
 
 import logging
-print("---------------------------------------------  end import Azure Monitor")
 # Configure OpenTelemetry to use Azure Monitor with the 
 # APPLICATIONINSIGHTS_CONNECTION_STRING environment variable.
 configure_azure_monitor(
@@ -126,7 +125,7 @@ tracer = trace.get_tracer(__name__)
 # Create a logger
 logger = logging.getLogger(__name__)
 logger.setLevel(logging.INFO)
-print("---------------------------------------------  end tracer and logger")
+
 # App
 # ---------------------------------------------------------------------------------
 
@@ -170,4 +169,4 @@ def confirm():
 
 # Exécuter l'application Flask en mode débogage si le script est exécuté directement
 if __name__ == '__main__':
-    app.run(debug=True)
+    app.run(port=8001, debug=True)
