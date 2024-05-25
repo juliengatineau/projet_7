@@ -33,7 +33,7 @@ jobs:
       - name: Test the app
         run: |
           echo Testing the app...
-          cd backend
+          cd api/backend
           pytest test.py
 
       - name: Zip artifact for deployment
