@@ -9,4 +9,4 @@ cd ../frontend_dev
 export FLASK_APP=app_frontend.py
 export FLASK_ENV=development
 export FLASK_DEBUG=1
-gunicorn --bind=0.0.0.0:$PORT app_frontend:app
+gunicorn --bind=0.0.0.0:$PORT_FRONTEND app_frontend:app
