@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 # Lancer le backend
 source venv/bin/activate
